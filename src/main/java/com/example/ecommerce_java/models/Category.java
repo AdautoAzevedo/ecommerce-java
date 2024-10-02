@@ -2,6 +2,7 @@ package com.example.ecommerce_java.models;
 
 import java.util.List;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -15,11 +16,13 @@ import lombok.Setter;
 @Table(name = "categories")
 @Getter
 @Setter
-public class Categories {
+public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "category_id")
     private Long categoryId;
 
+    @Column(name = "category_name")
     private String categoryName;
 
     @OneToMany(mappedBy = "category")
