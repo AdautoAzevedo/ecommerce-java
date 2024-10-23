@@ -1,6 +1,5 @@
 package com.example.ecommerce_java.controllers;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.ecommerce_java.models.CartItem;
 import com.example.ecommerce_java.models.Order;
 import com.example.ecommerce_java.services.OrderService;
 
@@ -23,8 +23,8 @@ public class OrderController {
     private OrderService service;
 
     @PostMapping("/user/{userId}")
-    public ResponseEntity<Order> createOrder(@PathVariable Long userId, @RequestBody BigDecimal totalPrice) {
-        Order order = service.createOrder(userId, totalPrice);
+    public ResponseEntity<Order> createOrder(@PathVariable Long userId, @RequestBody List<CartItem> cartItems) {
+        Order order = service.createOrder(userId, cartItems);
         return new ResponseEntity<>(order, HttpStatus.CREATED);
     }
 

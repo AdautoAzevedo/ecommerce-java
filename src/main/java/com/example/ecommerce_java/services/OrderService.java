@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.ecommerce_java.models.CartItem;
 import com.example.ecommerce_java.models.Order;
 import com.example.ecommerce_java.models.User;
 import com.example.ecommerce_java.repositories.OrderRepository;
@@ -19,12 +20,17 @@ public class OrderService {
     @Autowired
     private UserRepository userRepository;
 
-    public Order createOrder(Long userId, BigDecimal totalPrice) {
+    public Order createOrder(Long userId, List<CartItem> cartItems) {
         User user = findUser(userId);
         Order order = new Order();
         order.setUser(user);
-        order.setTotalPrice(totalPrice);
         order.setStatus("active");
+
+        BigDecimal total = cartItems.stream()
+        .map(cartItem -> cartItem.getProduct().getPrice().multiply(BigDecimal.valueOf(cartItem.getQuantity())))
+        .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        order.setTotalPrice(total);
         return orderRepository.save(order);
     }
 

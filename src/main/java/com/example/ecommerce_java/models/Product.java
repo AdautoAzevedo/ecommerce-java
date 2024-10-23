@@ -1,5 +1,7 @@
 package com.example.ecommerce_java.models;
 
+import java.math.BigDecimal;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -25,7 +27,7 @@ public class Product {
     private String name;
 
     @Column(name = "product_price")
-    private double price;
+    private BigDecimal price;
     
     @ManyToOne
     @JoinColumn(name = "category_id")
