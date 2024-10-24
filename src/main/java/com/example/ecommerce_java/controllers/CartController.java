@@ -22,7 +22,7 @@ public class CartController {
     @Autowired
     private CartService cartService;
 
-    @PostMapping("user/{userId}")
+    @PostMapping("/user/{userId}")
     public ResponseEntity<Cart> createCartForUser(@PathVariable Long userId) {
         Cart cart = cartService.createCartForUser(userId);
         return new ResponseEntity<>(cart, HttpStatus.CREATED);
