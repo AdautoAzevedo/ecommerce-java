@@ -8,5 +8,5 @@ import com.example.ecommerce_java.models.Category;
 import com.example.ecommerce_java.models.Product;
 
 public interface ProductRepository extends JpaRepository<Product, Long>{
-    List<Product> findByCategory(Category category);
+    List<Product> findByCategory(Long categoryId);
 }

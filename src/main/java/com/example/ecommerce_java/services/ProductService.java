@@ -21,6 +21,10 @@ public class ProductService {
         return repository.findAll();
     }
 
+    public List<Product> getProductsByCategory(Long categoryId) {
+        return repository.findByCategory(categoryId);
+    }
+
     public Product createProduct(Product product) {
         return repository.save(product);
     }

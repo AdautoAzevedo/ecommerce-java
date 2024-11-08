@@ -36,6 +36,12 @@ public class ProductController {
         return new ResponseEntity<>(product, HttpStatus.OK);
     }
 
+    @GetMapping("/category/{id}")
+    public ResponseEntity<List<Product>> getProductsByCategory(@PathVariable Long categoryId) {
+        List<Product> products = service.getProductsByCategory(categoryId);
+        return new ResponseEntity<>(products, HttpStatus.OK);
+    }
+
     @PostMapping("/")
     public ResponseEntity<Product> saveProduct(@RequestBody Product product) {
         Product savedProduct = service.createProduct(product);
