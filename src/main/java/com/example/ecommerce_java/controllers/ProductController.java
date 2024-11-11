@@ -25,7 +25,6 @@ public class ProductController {
 
     @GetMapping("")
     public ResponseEntity<List<Product>> getAllProducts() {
-        System.out.println("CALLED");
         List<Product> products = service.getAllProducts();
         return new ResponseEntity<>(products, HttpStatus.OK);
     }

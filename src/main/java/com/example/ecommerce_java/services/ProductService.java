@@ -1,10 +1,14 @@
 package com.example.ecommerce_java.services;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.ecommerce_java.dtos.ProductDTO;
+import com.example.ecommerce_java.dtos.SimplifiedCategoryDTO;
 import com.example.ecommerce_java.models.Product;
 import com.example.ecommerce_java.repositories.ProductRepository;
 
@@ -13,31 +17,49 @@ public class ProductService {
     @Autowired
     private ProductRepository repository;
 
-    public Product getProductById(Long productId) {
-        return repository.findById(productId).get();
+    public ProductDTO getProductById(Long productId) {
+        Product product = repository.findById(productId).get();
+        return convertToProductDTO(product);
     }
 
-    public List<Product> getAllProducts() {
-        return repository.findAll();
+    public List<ProductDTO> getAllProducts() {
+        List<Product> products = repository.findAll();
+        return mapProductsList(products);
+        
     }
 
-    public List<Product> getProductsByCategory(Long categoryId) {
-        return repository.findByCategory(categoryId);
+    public List<ProductDTO> getProductsByCategory(Long categoryId) {
+        List<Product> products = repository.findByCategory(categoryId);
+        return mapProductsList(products);
     }
 
-    public Product createProduct(Product product) {
-        return repository.save(product);
+    public ProductDTO createProduct(Product product) {
+        Product productFound =  repository.save(product);
+        return convertToProductDTO(productFound);
     }
 
-    public Product updateProduct(Product correctedProduct) {
+    public ProductDTO updateProduct(Product correctedProduct) {
         Product product = repository.findById(correctedProduct.getId()).get();
         product.setName(correctedProduct.getName());
         product.setPrice(correctedProduct.getPrice());
         product.setCategory(correctedProduct.getCategory());
-        return repository.save(product);
+        ProductDTO productDTO = convertToProductDTO(repository.save(product));
+        return productDTO;
     }
 
     public void deleteProduct(Long productId) {
         repository.deleteById(productId);
     }
+
+    private List<ProductDTO> mapProductsList(List<Product> products) {
+        return products.stream()
+                .map(this::convertToProductDTO)
+                .collect(Collectors.toList());
+    }
+
+    private ProductDTO convertToProductDTO(Product product) {
+        SimplifiedCategoryDTO categoryDTO = new SimplifiedCategoryDTO(product.getCategory().getCategoryId(), product.getCategory().getCategoryName());
+        return new ProductDTO(product.getId(), product.getName(), product.getPrice(), categoryDTO);
+    }
+
 }
