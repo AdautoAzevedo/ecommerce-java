@@ -3,12 +3,12 @@ package com.example.ecommerce_java.services;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.ecommerce_java.dtos.ProductDTO;
 import com.example.ecommerce_java.dtos.SimplifiedCategoryDTO;
+import com.example.ecommerce_java.exceptions.ResourceNotFoundException;
 import com.example.ecommerce_java.models.Product;
 import com.example.ecommerce_java.repositories.ProductRepository;
 
@@ -18,7 +18,8 @@ public class ProductService {
     private ProductRepository repository;
 
     public ProductDTO getProductById(Long productId) {
-        Product product = repository.findById(productId).get();
+        Product product = repository.findById(productId)
+            .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
         return convertToProductDTO(product);
     }
 
@@ -30,6 +31,9 @@ public class ProductService {
 
     public List<ProductDTO> getProductsByCategory(Long categoryId) {
         List<Product> products = repository.findByCategory(categoryId);
+        if (products.isEmpty()) {
+            throw new ResourceNotFoundException("No products found for category ID " + categoryId);
+        }
         return mapProductsList(products);
     }
 
@@ -39,15 +43,19 @@ public class ProductService {
     }
 
     public ProductDTO updateProduct(Product correctedProduct) {
-        Product product = repository.findById(correctedProduct.getId()).get();
-        product.setName(correctedProduct.getName());
-        product.setPrice(correctedProduct.getPrice());
-        product.setCategory(correctedProduct.getCategory());
-        ProductDTO productDTO = convertToProductDTO(repository.save(product));
+        Product existingProduct = repository.findById(correctedProduct.getId())
+        .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
+        existingProduct.setName(correctedProduct.getName());
+        existingProduct.setPrice(correctedProduct.getPrice());
+        existingProduct.setCategory(correctedProduct.getCategory());
+        ProductDTO productDTO = convertToProductDTO(repository.save(existingProduct));
         return productDTO;
     }
 
     public void deleteProduct(Long productId) {
+        if (!repository.existsById(productId)) {
+            throw new ResourceNotFoundException("Product with Id" + productId);
+        }
         repository.deleteById(productId);
     }
 
