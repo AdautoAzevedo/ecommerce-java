@@ -3,6 +3,7 @@ package com.example.ecommerce_java.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.ecommerce_java.exceptions.ResourceNotFoundException;
 import com.example.ecommerce_java.models.Cart;
 import com.example.ecommerce_java.models.User;
 import com.example.ecommerce_java.repositories.CartRepository;
@@ -19,7 +20,7 @@ public class CartService {
 
     public Cart createCartForUser(Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         
         Cart cart = new Cart();
         cart.setUser(user);
@@ -29,7 +30,7 @@ public class CartService {
 
     public Cart getCartById(Long cartId) {
         return cartRepository.findById(cartId)
-                .orElseThrow(() -> new RuntimeException("Cart not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Cart not found"));
     }
 
     public Cart updateCart(Cart cart) {

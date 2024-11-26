@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.ecommerce_java.exceptions.ResourceNotFoundException;
 import com.example.ecommerce_java.models.CartItem;
 import com.example.ecommerce_java.models.Order;
 import com.example.ecommerce_java.models.User;
@@ -41,13 +42,13 @@ public class OrderService {
 
     public void updateOrderStatus(Long orderId, String status) {
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
 
         order.setStatus(status);
         orderRepository.save(order);
     }
 
     private User findUser(Long userId) {
-        return userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        return userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 }
