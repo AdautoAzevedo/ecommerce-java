@@ -2,9 +2,12 @@ package com.example.ecommerce_java;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -15,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.example.ecommerce_java.dtos.ProductDTO;
+import com.example.ecommerce_java.exceptions.ResourceNotFoundException;
 import com.example.ecommerce_java.models.Category;
 import com.example.ecommerce_java.models.Product;
 import com.example.ecommerce_java.repositories.ProductRepository;
@@ -54,6 +58,24 @@ public class ProductServiceTest {
         assertNotNull(result);
         assertEquals(mockProduct.getId(), result.productId());
         assertEquals(mockProduct.getName(), result.name());
+    }
+
+    @Test
+    void getProductById_ShouldThrowException_WhenProductNotFound() {
+        when(repository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> service.getProductById(1L));
+    }
+
+    @Test
+    void getAllProducts_ShouldReturnProductDTOList() {
+        when(repository.findAll()).thenReturn(Arrays.asList(mockProduct));
+
+        List<ProductDTO> result = service.getAllProducts();
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals(mockProduct.getId(), result.get(0).productId());
     }
 
 }
