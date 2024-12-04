@@ -78,4 +78,13 @@ public class ProductServiceTest {
         assertEquals(mockProduct.getId(), result.get(0).productId());
     }
 
+    @Test
+    void getProductsByCategory_ShouldReturnProductDTOList() {
+        when(repository.findByCategory(1L)).thenReturn(Arrays.asList(mockProduct));
+
+        List<ProductDTO> result = service.getProductsByCategory(1L);
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+    }
 }
