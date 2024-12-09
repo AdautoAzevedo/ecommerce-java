@@ -87,4 +87,11 @@ public class ProductServiceTest {
         assertNotNull(result);
         assertEquals(1, result.size());
     }
+
+    @Test
+    void getProductsByCategory_ShouldThrowException() {
+        when(repository.findByCategory(1L)).thenReturn(Arrays.asList());
+
+        assertThrows(ResourceNotFoundException.class, () -> service.getProductsByCategory(1L));
+    }
 }
