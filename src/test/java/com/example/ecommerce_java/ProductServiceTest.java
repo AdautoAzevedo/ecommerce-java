@@ -94,4 +94,35 @@ public class ProductServiceTest {
 
         assertThrows(ResourceNotFoundException.class, () -> service.getProductsByCategory(1L));
     }
+
+    @Test 
+    void createProduct_ShouldReturnCreatedProductDTO() {
+        when(repository.save(mockProduct)).thenReturn(mockProduct);
+
+        ProductDTO result = service.createProduct(mockProduct);
+
+        assertNotNull(result);
+        assertEquals(mockProduct.getId(), result.productId());
+        assertEquals(mockProduct.getName(), result.name());
+    }
+
+    @Test
+    void updateProduct_ShouldUpdateAndReturnProductDTO() {
+        when(repository.findById(1L)).thenReturn(Optional.of(mockProduct));
+        when(repository.save(any(Product.class))).thenReturn(mockProduct);
+
+        mockProduct.setName("Updated Laptop");
+        ProductDTO result = service.updateProduct(mockProduct);
+
+        assertNotNull(result);
+        assertEquals("Updated Laptop", result.name());
+    }
+
+    @Test
+    void deleteProduct_ShouldDeleteProduct() {
+        when(repository.existsById(1L)).thenReturn(true);
+
+        assertDoesNotThrow(() -> service.deleteProduct(1L));
+        verify(repository, times(1).deleteById(1L));
+    }
 }
