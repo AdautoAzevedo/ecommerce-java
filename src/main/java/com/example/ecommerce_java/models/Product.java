@@ -20,7 +20,6 @@ import lombok.Setter;
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "product_id")
     private Long id;
 
     @Column(name = "product_name")
@@ -30,6 +29,6 @@ public class Product {
     private BigDecimal price;
     
     @ManyToOne
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 }

@@ -3,6 +3,7 @@ package com.example.ecommerce_java.models;
 import java.math.BigDecimal;
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -34,7 +35,7 @@ public class Cart {
     @Column(name = "total_price", precision = 10, scale = 2)
     private BigDecimal totalPrice = BigDecimal.ZERO;
 
-    @OneToMany(mappedBy = "cart")
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
     private List<CartItem> cartItems;
 
 }

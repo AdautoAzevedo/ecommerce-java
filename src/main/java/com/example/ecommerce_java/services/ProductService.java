@@ -30,7 +30,7 @@ public class ProductService {
     }
 
     public List<ProductDTO> getProductsByCategory(Long categoryId) {
-        List<Product> products = repository.findByCategory(categoryId);
+        List<Product> products = repository.findByCategoryId(categoryId);
         if (products.isEmpty()) {
             throw new ResourceNotFoundException("No products found for category ID " + categoryId);
         }
@@ -66,7 +66,7 @@ public class ProductService {
     }
 
     private ProductDTO convertToProductDTO(Product product) {
-        SimplifiedCategoryDTO categoryDTO = new SimplifiedCategoryDTO(product.getCategory().getCategoryId(), product.getCategory().getCategoryName());
+        SimplifiedCategoryDTO categoryDTO = new SimplifiedCategoryDTO(product.getCategory().getId(), product.getCategory().getCategoryName());
         return new ProductDTO(product.getId(), product.getName(), product.getPrice(), categoryDTO);
     }
 

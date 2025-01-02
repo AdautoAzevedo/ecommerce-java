@@ -15,7 +15,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "users")
+@Table(name = "users_ecommerce")
 @Getter
 @Setter
 public class User {
@@ -37,10 +37,10 @@ public class User {
     @Column(name = "user_role", nullable = false)
     private String userRole = "user";
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private Cart cart;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Cart> cart;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Order> orders;
 
     public User(String name, String login, String password) {

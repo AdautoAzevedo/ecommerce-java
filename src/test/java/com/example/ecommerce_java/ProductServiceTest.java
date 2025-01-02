@@ -1,8 +1,12 @@
 package com.example.ecommerce_java;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
@@ -39,7 +43,7 @@ public class ProductServiceTest {
     @BeforeEach
     void setUp() {
         mockCategory = new Category();
-        mockCategory.setCategoryId(1L);
+        mockCategory.setId(1L);
         mockCategory.setCategoryName("mock category");
 
         mockProduct = new Product();
@@ -80,7 +84,7 @@ public class ProductServiceTest {
 
     @Test
     void getProductsByCategory_ShouldReturnProductDTOList() {
-        when(repository.findByCategory(1L)).thenReturn(Arrays.asList(mockProduct));
+        when(repository.findByCategoryId(1L)).thenReturn(Arrays.asList(mockProduct));
 
         List<ProductDTO> result = service.getProductsByCategory(1L);
 
@@ -90,7 +94,7 @@ public class ProductServiceTest {
 
     @Test
     void getProductsByCategory_ShouldThrowException() {
-        when(repository.findByCategory(1L)).thenReturn(Arrays.asList());
+        when(repository.findByCategoryId(1L)).thenReturn(Arrays.asList());
 
         assertThrows(ResourceNotFoundException.class, () -> service.getProductsByCategory(1L));
     }
@@ -123,6 +127,6 @@ public class ProductServiceTest {
         when(repository.existsById(1L)).thenReturn(true);
 
         assertDoesNotThrow(() -> service.deleteProduct(1L));
-        verify(repository, times(1).deleteById(1L));
+        verify(repository, times(1)).deleteById(1L);
     }
 }
