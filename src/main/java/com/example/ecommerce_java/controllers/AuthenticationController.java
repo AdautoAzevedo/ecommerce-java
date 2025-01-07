@@ -1,5 +1,7 @@
 package com.example.ecommerce_java.controllers;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -52,10 +54,15 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity register(@RequestBody RegisterDTO data) {
-        if (this.userRepository.findByLogin(data.login()) != null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-
+        System.out.println(data);
+        Optional<User> user = userRepository.findByLogin(data.login());
+        System.out.println(user);
+        if (this.userRepository.findByLogin(data.login()).isPresent()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
         User newUser = new User(data.name(), data.login(), encryptedPassword);
+        System.out.println(newUser);
         this.userRepository.save(newUser);
 
         return new ResponseEntity<>(HttpStatus.CREATED);

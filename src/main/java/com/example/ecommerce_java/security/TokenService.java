@@ -19,12 +19,14 @@ public class TokenService {
 
     public String generateToken(UserPrincipal userPrincipal) {
         try{
+            System.out.println(userPrincipal);
             Algorithm algorithm = Algorithm.HMAC256(secret);
             String token = JWT.create()
                 .withIssuer("ecommerce-api")
                 .withSubject(userPrincipal.getUsername())
                 .withExpiresAt(genExpirationDate())
                 .sign(algorithm);
+            System.out.println(token);
             return token;
         } catch (JWTCreationException exception) {
             throw new RuntimeException("Error while genenrating token: ", exception);

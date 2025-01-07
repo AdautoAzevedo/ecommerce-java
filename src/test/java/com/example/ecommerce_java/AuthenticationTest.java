@@ -80,4 +80,20 @@ public class AuthenticationTest {
         verify(authenticationManager, times(1)).authenticate(any(UsernamePasswordAuthenticationToken.class));
         verify(tokenService, times(1)).generateToken(userPrincipal);
     }
+
+    @Test
+    public void testLogin_Failure() throws Exception {
+        String login = "invaliduser";
+        String password = "wrong password";
+        AuthenticationDTO authDTO = new AuthenticationDTO(login, password);
+
+        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
+                .thenThrow(new RuntimeException("Authentication failed"));
+            
+        mockMvc.perform(post("/api/auth/login")
+                        .contentType(org.springframework.http.MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(authDTO)))
+                .andExpect(status().isUnauthorized());
+        verify(authenticationManager, times(1)).authenticate(any(UsernamePasswordAuthenticationToken.class));
+    }
 }
