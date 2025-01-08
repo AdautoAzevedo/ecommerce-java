@@ -1,6 +1,7 @@
 package com.example.ecommerce_java.controllers;
 
 import java.util.Optional;
+import java.util.Scanner;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -37,17 +38,23 @@ public class AuthenticationController {
     @PostMapping("/login")
     public ResponseEntity login( @RequestBody AuthenticationDTO data) {
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.login(), data.password());
-
+        System.out.println("UsernamePassword: " + usernamePassword);
         try {
+            System.out.println("Antes do auth");
             var auth = this.authenticationManager.authenticate(usernamePassword);
+            System.out.println("Auth: " + auth);
             if (auth.getPrincipal() instanceof UserPrincipal) {
                 var userPrincipal = (UserPrincipal) auth.getPrincipal();
+                System.out.println("User principal: " + userPrincipal);
+                
                 var token = tokenService.generateToken(userPrincipal);
                 return new ResponseEntity<>(new LoginResponseDTO(token), HttpStatus.OK);
             } else {
+                System.err.println("ERRO NO IF");
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             }
         } catch (AuthenticationException e) {
+            System.err.println("ERRO NO TRY:" + e.getMessage());
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
     }
