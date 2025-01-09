@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.ecommerce_java.dtos.ProductDTO;
-import com.example.ecommerce_java.dtos.SimplifiedCategoryDTO;
 import com.example.ecommerce_java.exceptions.ResourceNotFoundException;
 import com.example.ecommerce_java.models.Product;
 import com.example.ecommerce_java.repositories.ProductRepository;
@@ -20,7 +19,7 @@ public class ProductService {
     public ProductDTO getProductById(Long productId) {
         Product product = repository.findById(productId)
             .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
-        return convertToProductDTO(product);
+        return DTOMapper.convertToProductDTO(product);
     }
 
     public List<ProductDTO> getAllProducts() {
@@ -39,7 +38,7 @@ public class ProductService {
 
     public ProductDTO createProduct(Product product) {
         Product productFound =  repository.save(product);
-        return convertToProductDTO(productFound);
+        return DTOMapper.convertToProductDTO(productFound);
     }
 
     public ProductDTO updateProduct(Product correctedProduct) {
@@ -48,7 +47,7 @@ public class ProductService {
         existingProduct.setName(correctedProduct.getName());
         existingProduct.setPrice(correctedProduct.getPrice());
         existingProduct.setCategory(correctedProduct.getCategory());
-        ProductDTO productDTO = convertToProductDTO(repository.save(existingProduct));
+        ProductDTO productDTO = DTOMapper.convertToProductDTO(repository.save(existingProduct));
         return productDTO;
     }
 
@@ -61,13 +60,7 @@ public class ProductService {
 
     private List<ProductDTO> mapProductsList(List<Product> products) {
         return products.stream()
-                .map(this::convertToProductDTO)
+                .map(DTOMapper::convertToProductDTO)
                 .collect(Collectors.toList());
     }
-
-    private ProductDTO convertToProductDTO(Product product) {
-        SimplifiedCategoryDTO categoryDTO = new SimplifiedCategoryDTO(product.getCategory().getId(), product.getCategory().getCategoryName());
-        return new ProductDTO(product.getId(), product.getName(), product.getPrice(), categoryDTO);
-    }
-
 }

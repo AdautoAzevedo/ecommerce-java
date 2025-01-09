@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.ecommerce_java.dtos.CartDTO;
 import com.example.ecommerce_java.models.Cart;
 import com.example.ecommerce_java.services.CartService;
 
@@ -23,21 +24,21 @@ public class CartController {
     private CartService cartService;
 
     @PostMapping("/user/{userId}")
-    public ResponseEntity<Cart> createCartForUser(@PathVariable Long userId) {
-        Cart cart = cartService.createCartForUser(userId);
+    public ResponseEntity<CartDTO> createCartForUser(@PathVariable Long userId) {
+        CartDTO cart = cartService.createCartForUser(userId);
         return new ResponseEntity<>(cart, HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Cart> getCartById(@PathVariable Long id) {
-        Cart cart = cartService.getCartById(id);
+    public ResponseEntity<CartDTO> getCartById(@PathVariable Long id) {
+        CartDTO cart = cartService.getCartById(id);
         return new ResponseEntity<>(cart, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Cart> updateCart(@PathVariable Long id, @RequestBody Cart cart) {
+    public ResponseEntity<CartDTO> updateCart(@PathVariable Long id, @RequestBody Cart cart) {
         cart.setId(id);
-        Cart updatedCart = cartService.updateCart(cart);
+        CartDTO updatedCart = cartService.updateCart(cart);
         return new ResponseEntity<>(updatedCart, HttpStatus.OK);
     }
 
