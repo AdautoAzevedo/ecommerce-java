@@ -24,6 +24,7 @@ public class CategoryService {
     }
 
     public List<CategoryDTO> getAllCategories() {
+        System.out.println("Called");
         return repository.findAll().stream()
                 .map(category -> new CategoryDTO(category.getCategoryName()))
                 .collect(Collectors.toList());

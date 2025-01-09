@@ -16,6 +16,7 @@ public class CartItemService {
             cartItem.setCart(cart);
             return cartItemRepository.save(cartItem);
     }
+    
     public CartItem updateCartItem(CartItem cartItem) {
         return cartItemRepository.save(cartItem);
     }

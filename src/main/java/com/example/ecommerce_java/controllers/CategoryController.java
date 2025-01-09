@@ -23,8 +23,9 @@ public class CategoryController {
     @Autowired
     private CategoryService service;
 
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<List<CategoryDTO>> getAllCategories() {
+        System.out.println("Category controller called");
         List<CategoryDTO> categories = service.getAllCategories();
         return new ResponseEntity<>(categories, HttpStatus.OK);
     }
@@ -35,7 +36,7 @@ public class CategoryController {
         return new ResponseEntity<>(category, HttpStatus.OK);
     }
 
-    @PostMapping("/")
+    @PostMapping("")
     public ResponseEntity<SimplifiedCategoryDTO> saveCategory(@RequestBody CategoryDTO categoryDTO) {
         SimplifiedCategoryDTO savedCategory = service.createCategory(categoryDTO);
         return new ResponseEntity<SimplifiedCategoryDTO>(savedCategory, HttpStatus.CREATED);

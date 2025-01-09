@@ -24,7 +24,7 @@ public class ProductController {
     @Autowired
     private ProductService service;
 
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<List<ProductDTO>> getAllProducts() {
         List<ProductDTO> products = service.getAllProducts();
         return new ResponseEntity<>(products, HttpStatus.OK);
@@ -42,8 +42,9 @@ public class ProductController {
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
-    @PostMapping("/")
+    @PostMapping("")
     public ResponseEntity<ProductDTO> saveProduct(@RequestBody Product product) {
+        System.out.println(product);
         ProductDTO savedProduct = service.createProduct(product);
         return new ResponseEntity<>(savedProduct, HttpStatus.CREATED);
     }
@@ -56,8 +57,8 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable Long productId) {
-        service.deleteProduct(productId);
+    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
+        service.deleteProduct(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

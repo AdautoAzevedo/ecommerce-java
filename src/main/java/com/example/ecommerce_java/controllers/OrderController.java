@@ -31,6 +31,7 @@ public class OrderController {
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<Order>> getOrdersByUser(@PathVariable Long userId) {
         List<Order> orders = service.getOrderByUser(userId);
+        System.out.println("ORDERS CALLED");
         return new ResponseEntity<List<Order>>(orders, HttpStatus.OK);
     }
 }
