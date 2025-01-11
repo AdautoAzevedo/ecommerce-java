@@ -13,9 +13,21 @@ public class CartItemService {
     @Autowired
     private CartItemRepository cartItemRepository;
 
-    public CartItemDTO addToCart(Cart cart, CartItem cartItem) {
+    @Autowired CartService cartService;
+
+    public CartItemDTO addToCart(Long cartId, CartItem cartItem) {
+       
+        Cart cart = cartService.getCartById(cartId);
         cartItem.setCart(cart);
-        CartItem savedItem =  cartItemRepository.save(cartItem);
+        CartItem existingItem = cartItemRepository.findByCartIdAndProductId(cartId, cartItem.getProduct().getId());
+        if (existingItem != null) {
+            existingItem.setQuantity(existingItem.getQuantity() + cartItem.getQuantity());
+            CartItem updatedItem = cartItemRepository.save(existingItem);
+            return DTOMapper.toCartItemDTO(updatedItem);
+        }
+         
+
+        CartItem savedItem = cartItemRepository.save(cartItem);
         return DTOMapper.toCartItemDTO(savedItem);
     }
     

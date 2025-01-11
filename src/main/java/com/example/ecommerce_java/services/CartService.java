@@ -30,10 +30,23 @@ public class CartService {
         return DTOMapper.toCartDTO(savedCart);
     }
 
-    public CartDTO getCartById(Long cartId) {
+    public void findActiveCartByUserId(Long userId) {
+        Cart activeCart = cartRepository.findByUserIdAndStatus(userId, "active").orElse(null);
+        if (activeCart == null) {
+            createCartForUser(userId);
+        }
+    }
+
+    public CartDTO getCartDTOById(Long cartId) {
         Cart cart = cartRepository.findById(cartId)
                 .orElseThrow(() -> new ResourceNotFoundException("Cart not found"));
         return DTOMapper.toCartDTO(cart);
+    }
+    
+    public Cart getCartById(Long cartId) {
+        Cart cart = cartRepository.findById(cartId)
+                .orElseThrow(() -> new ResourceNotFoundException("Cart not found"));
+        return cart;
     }
 
     public CartDTO updateCart(Cart cart) {

@@ -22,6 +22,7 @@ import com.example.ecommerce_java.models.User;
 import com.example.ecommerce_java.models.UserPrincipal;
 import com.example.ecommerce_java.repositories.UserRepository;
 import com.example.ecommerce_java.security.TokenService;
+import com.example.ecommerce_java.services.CartService;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -35,26 +36,26 @@ public class AuthenticationController {
     @Autowired
     private TokenService tokenService;
 
+    @Autowired
+    private CartService cartService;
+
     @PostMapping("/login")
     public ResponseEntity login( @RequestBody AuthenticationDTO data) {
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.login(), data.password());
-        System.out.println("UsernamePassword: " + usernamePassword);
         try {
-            System.out.println("Antes do auth");
             var auth = this.authenticationManager.authenticate(usernamePassword);
-            System.out.println("Auth: " + auth);
             if (auth.getPrincipal() instanceof UserPrincipal) {
                 var userPrincipal = (UserPrincipal) auth.getPrincipal();
-                System.out.println("User principal: " + userPrincipal);
-                
+
                 var token = tokenService.generateToken(userPrincipal);
+                Long userId = userPrincipal.getUser().getId();
+                cartService.createCartForUser(userId);
+
                 return new ResponseEntity<>(new LoginResponseDTO(token), HttpStatus.OK);
-            } else {
-                System.err.println("ERRO NO IF");
+            } else {        
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             }
         } catch (AuthenticationException e) {
-            System.err.println("ERRO NO TRY:" + e.getMessage());
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
     }
