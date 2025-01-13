@@ -1,5 +1,6 @@
 package com.example.ecommerce_java.services;
 
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 import com.example.ecommerce_java.dtos.CartDTO;
@@ -36,6 +37,12 @@ public class DTOMapper {
 
     public static CartDTO toCartDTO(Cart cart) {
         return new CartDTO(
-            cart.getId(), toUserDTO(cart.getUser()), cart.getStatus(), cart.getTotalPrice(), cart.getCartItems().stream().map(DTOMapper::toCartItemDTO).collect(Collectors.toList()));
+            cart.getId(),
+            toUserDTO(cart.getUser()), 
+            cart.getStatus(), 
+            cart.getTotalPrice(), 
+             cart.getCartItems() != null
+            ? cart.getCartItems().stream().map(DTOMapper::toCartItemDTO).collect(Collectors.toList())
+            : new ArrayList<>());
     }
 }

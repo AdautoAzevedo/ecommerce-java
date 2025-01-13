@@ -23,11 +23,12 @@ public class CartItemService {
         if (existingItem != null) {
             existingItem.setQuantity(existingItem.getQuantity() + cartItem.getQuantity());
             CartItem updatedItem = cartItemRepository.save(existingItem);
+            cartService.updateCartTotalPrice(cart);
             return DTOMapper.toCartItemDTO(updatedItem);
         }
-         
 
         CartItem savedItem = cartItemRepository.save(cartItem);
+        cartService.updateCartTotalPrice(cart);
         return DTOMapper.toCartItemDTO(savedItem);
     }
     
