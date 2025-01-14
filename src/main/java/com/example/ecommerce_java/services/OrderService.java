@@ -32,6 +32,7 @@ public class OrderService {
         .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         order.setTotalPrice(total);
+        System.out.println("ORDER: " + order);
         return orderRepository.save(order);
     }
 

@@ -34,6 +34,10 @@ public class CartService {
         return DTOMapper.toCartDTO(savedCart);
     }
 
+    public Cart saveCart(Cart cart) {
+        return cartRepository.save(cart);
+    }
+
     public void findActiveCartByUserId(Long userId) {
         Cart activeCart = cartRepository.findByUserIdAndStatus(userId, "active").orElse(null);
         if (activeCart == null) {

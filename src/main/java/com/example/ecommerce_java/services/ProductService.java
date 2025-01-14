@@ -16,10 +16,16 @@ public class ProductService {
     @Autowired
     private ProductRepository repository;
 
-    public ProductDTO getProductById(Long productId) {
+    public ProductDTO getProductDTOById(Long productId) {
         Product product = repository.findById(productId)
             .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
         return DTOMapper.convertToProductDTO(product);
+    }
+
+    public Product getProductById(Long productId) {
+        Product product = repository.findById(productId)
+            .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
+        return product;
     }
 
     public List<ProductDTO> getAllProducts() {

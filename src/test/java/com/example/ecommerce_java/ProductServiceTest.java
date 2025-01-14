@@ -57,7 +57,7 @@ public class ProductServiceTest {
     void getProductsById_ShouldReturnProductDTO(){
         when(repository.findById(1L)).thenReturn(Optional.of(mockProduct));
         
-        ProductDTO result = service.getProductById(1L);
+        ProductDTO result = service.getProductDTOById(1L);
         
         assertNotNull(result);
         assertEquals(mockProduct.getId(), result.productId());
@@ -68,7 +68,7 @@ public class ProductServiceTest {
     void getProductById_ShouldThrowException_WhenProductNotFound() {
         when(repository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(ResourceNotFoundException.class, () -> service.getProductById(1L));
+        assertThrows(ResourceNotFoundException.class, () -> service.getProductDTOById(1L));
     }
 
     @Test
