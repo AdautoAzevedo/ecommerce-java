@@ -25,7 +25,7 @@ public class CartController {
 
     @PostMapping("/user/{userId}")
     public ResponseEntity<CartDTO> createCartForUser(@PathVariable Long userId) {
-        CartDTO cart = cartService.createCartForUser(userId);
+        CartDTO cart = cartService.createOrGetCartForUser(userId);
         return new ResponseEntity<>(cart, HttpStatus.CREATED);
     }
 

@@ -2,6 +2,7 @@ package com.example.ecommerce_java.services;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,14 +23,20 @@ public class CartService {
     @Autowired
     private UserRepository userRepository;
 
-    public CartDTO createCartForUser(Long userId) {
+    public CartDTO createOrGetCartForUser(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        
+        Cart activeCart = cartRepository.findByUserIdAndStatus(userId, "active").get();
+
+        if (activeCart != null) {
+            return DTOMapper.toCartDTO(activeCart);
+        }
+
         Cart cart = new Cart();
         cart.setUser(user);
         cart.setStatus("active");
         cart.setCartItems(new ArrayList<>());
+        cart.setTotalPrice(BigDecimal.ZERO);
         Cart savedCart = cartRepository.save(cart);
         return DTOMapper.toCartDTO(savedCart);
     }
@@ -41,7 +48,7 @@ public class CartService {
     public void findActiveCartByUserId(Long userId) {
         Cart activeCart = cartRepository.findByUserIdAndStatus(userId, "active").orElse(null);
         if (activeCart == null) {
-            createCartForUser(userId);
+            createOrGetCartForUser(userId);
         }
     }
 

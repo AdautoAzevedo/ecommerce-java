@@ -49,7 +49,7 @@ public class AuthenticationController {
 
                 var token = tokenService.generateToken(userPrincipal);
                 Long userId = userPrincipal.getUser().getId();
-                cartService.createCartForUser(userId);
+                cartService.createOrGetCartForUser(userId);
                 return new ResponseEntity<>(new LoginResponseDTO(token), HttpStatus.OK);
             } else {        
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
