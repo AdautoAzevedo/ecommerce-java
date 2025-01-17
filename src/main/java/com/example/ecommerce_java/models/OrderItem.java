@@ -1,5 +1,7 @@
 package com.example.ecommerce_java.models;
 
+import java.math.BigDecimal;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -30,4 +32,10 @@ public class OrderItem {
 
     @Column(nullable = false)
     private Integer quantity;
+
+    @Column(name = "price", nullable = false, precision = 10, scale = 2)
+    private BigDecimal price;
+
+    @Column(name = "total_price", nullable = false, precision = 10, scale = 2)
+    private BigDecimal totalPrice;
 }
