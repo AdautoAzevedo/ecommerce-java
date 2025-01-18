@@ -1,15 +1,18 @@
 package com.example.ecommerce_java.services;
 
-import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.ecommerce_java.dtos.OrderDTO;
 import com.example.ecommerce_java.exceptions.ResourceNotFoundException;
-import com.example.ecommerce_java.models.CartItem;
+import com.example.ecommerce_java.models.Cart;
 import com.example.ecommerce_java.models.Order;
+import com.example.ecommerce_java.models.OrderItem;
 import com.example.ecommerce_java.models.User;
+import com.example.ecommerce_java.repositories.CartRepository;
 import com.example.ecommerce_java.repositories.OrderRepository;
 import com.example.ecommerce_java.repositories.UserRepository;
 
@@ -21,24 +24,41 @@ public class OrderService {
     @Autowired
     private UserRepository userRepository;
 
-    public Order createOrder(Long userId, List<CartItem> cartItems) {
+    @Autowired
+    private CartRepository cartRepository;
+
+    public OrderDTO createOrder(Long userId) {
         User user = findUser(userId);
+        Cart cart = cartRepository.findByUserIdAndStatus(userId, "active").get();
+        
+
         Order order = new Order();
         order.setUser(user);
-        order.setStatus("active");
+        order.setTotalPrice(cart.getTotalPrice());
+        order.setStatus("unpaid");
 
-        BigDecimal total = cartItems.stream()
-        .map(cartItem -> cartItem.getProduct().getPrice().multiply(BigDecimal.valueOf(cartItem.getQuantity())))
-        .reduce(BigDecimal.ZERO, BigDecimal::add);
+        List<OrderItem> orderItems = cart.getCartItems().stream().map(cartItem -> {
+            OrderItem orderItem = new OrderItem();
+            orderItem.setOrder(order);
+            orderItem.setProduct(cartItem.getProduct());
+            orderItem.setQuantity(cartItem.getQuantity());
+            orderItem.setPrice(cartItem.getProduct().getPrice());
+            return orderItem;
+        }).collect(Collectors.toList());
 
-        order.setTotalPrice(total);
-        System.out.println("ORDER: " + order);
-        return orderRepository.save(order);
+        order.setOrderItems(orderItems);
+
+        Order savedOrder = orderRepository.save(order);
+        cart.setStatus("inactive");
+        cartRepository.save(cart);
+        return DTOMapper.toOrderDTO(savedOrder);
     }
 
-    public List<Order> getOrderByUser(Long userId) {
+    public List<OrderDTO> getOrderByUser(Long userId) {
         User user = findUser(userId);
-        return orderRepository.findByUser(user);
+        List<Order> orders = orderRepository.findByUser(user);
+
+        return orders.stream().map(DTOMapper::toOrderDTO).collect(Collectors.toList());
     }
 
     public void updateOrderStatus(Long orderId, String status) {

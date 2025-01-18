@@ -19,7 +19,7 @@ public class ProductService {
     public ProductDTO getProductDTOById(Long productId) {
         Product product = repository.findById(productId)
             .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
-        return DTOMapper.convertToProductDTO(product);
+        return DTOMapper.toProductDTO(product);
     }
 
     public Product getProductById(Long productId) {
@@ -44,7 +44,7 @@ public class ProductService {
 
     public ProductDTO createProduct(Product product) {
         Product productFound =  repository.save(product);
-        return DTOMapper.convertToProductDTO(productFound);
+        return DTOMapper.toProductDTO(productFound);
     }
 
     public ProductDTO updateProduct(Product correctedProduct) {
@@ -53,7 +53,7 @@ public class ProductService {
         existingProduct.setName(correctedProduct.getName());
         existingProduct.setPrice(correctedProduct.getPrice());
         existingProduct.setCategory(correctedProduct.getCategory());
-        ProductDTO productDTO = DTOMapper.convertToProductDTO(repository.save(existingProduct));
+        ProductDTO productDTO = DTOMapper.toProductDTO(repository.save(existingProduct));
         return productDTO;
     }
 
@@ -66,7 +66,7 @@ public class ProductService {
 
     private List<ProductDTO> mapProductsList(List<Product> products) {
         return products.stream()
-                .map(DTOMapper::convertToProductDTO)
+                .map(DTOMapper::toProductDTO)
                 .collect(Collectors.toList());
     }
 }
