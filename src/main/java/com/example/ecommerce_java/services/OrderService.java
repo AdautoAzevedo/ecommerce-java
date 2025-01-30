@@ -48,6 +48,8 @@ public class OrderService {
 
         order.setOrderItems(orderItems);
 
+        System.out.println("Order:" + order);
+
         Order savedOrder = orderRepository.save(order);
         cart.setStatus("inactive");
         cartRepository.save(cart);
