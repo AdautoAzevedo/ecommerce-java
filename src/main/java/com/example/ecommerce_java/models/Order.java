@@ -32,9 +32,13 @@ public class Order {
     @Column(name = "total_price", nullable = false, precision = 10, scale = 2)
     private BigDecimal totalPrice;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    private String status = "unpaid";
+    private OrderStatus status;
 
     @OneToMany(mappedBy = "order")
     private List<OrderItem> orderItems;
+
+    @Column(name = "payment_intent_id")
+    private String paymentIntendId;
 }
